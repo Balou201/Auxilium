@@ -1,142 +1,116 @@
-/* Import de la police Google Fonts pour un style plus moderne */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+document.addEventListener('DOMContentLoaded', () => {
+    const questionEl = document.getElementById('question');
+    const reponseInput = document.getElementById('reponse');
+    const validerBtn = document.getElementById('valider');
+    const resultatEl = document.getElementById('resultat');
+    const nouvelleQuestionBtn = document.getElementById('nouvelle-question');
+    const techniqueAideEl = document.getElementById('technique-aide');
 
-:root {
-    --primary-color: #4CAF50; /* Vert */
-    --secondary-color: #FFC107; /* Jaune */
-    --background-color: #e0f7fa; /* Bleu clair */
-    --card-background: #ffffff; /* Blanc */
-    --text-color: #333333;
-    --shadow-light: rgba(0, 0, 0, 0.1);
-    --shadow-heavy: rgba(0, 0, 0, 0.2);
-    --correct-color: #4CAF50; /* Vert pour la bonne réponse */
-    --incorrect-color: #F44336; /* Rouge pour la mauvaise réponse */
-}
+    let nombre1, nombre2, bonneReponse;
+    const erreursParNombre = {}; 
+    const seuilErreurs = 3;
 
-body {
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background: linear-gradient(135deg, var(--background-color), #b2ebf2);
-    color: var(--text-color);
-}
+    function genererQuestion() {
+        nombre1 = Math.floor(Math.random() * 12) + 1;
+        nombre2 = Math.floor(Math.random() * 12) + 1;
+        bonneReponse = nombre1 * nombre2;
 
-.container {
-    text-align: center;
-    background-color: var(--card-background);
-    padding: 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px var(--shadow-light);
-    max-width: 600px;
-    width: 90%;
-    transition: transform 0.3s ease-in-out;
-}
+        questionEl.textContent = `${nombre1} x ${nombre2} = ?`;
+        reponseInput.value = '';
+        resultatEl.textContent = '';
+        techniqueAideEl.innerHTML = '';
+        reponseInput.focus();
 
-.container:hover {
-    transform: translateY(-5px);
-}
-
-h1 {
-    font-size: 2.5em;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-    text-shadow: 1px 1px 2px var(--shadow-light);
-}
-
-.question {
-    font-size: 3em;
-    font-weight: 600;
-    margin-bottom: 30px;
-    color: var(--text-color);
-    letter-spacing: 2px;
-}
-
-#reponse {
-    padding: 12px 20px;
-    width: 250px;
-    font-size: 1.5em;
-    border-radius: 10px;
-    border: 2px solid #ddd;
-    text-align: center;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px var(--shadow-light);
-}
-
-#reponse:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
-}
-
-button {
-    padding: 12px 30px;
-    font-size: 1.2em;
-    font-weight: 600;
-    border: none;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    text-transform: uppercase;
-    margin-top: 20px;
-}
-
-button:active {
-    transform: translateY(2px);
-}
-
-#valider {
-    background-color: var(--primary-color);
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-}
-
-#valider:hover {
-    background-color: #43a047;
-}
-
-#nouvelle-question {
-    background-color: var(--secondary-color);
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.4);
-}
-
-#nouvelle-question:hover {
-    background-color: #ffb300;
-}
-
-.resultat {
-    margin-top: 25px;
-    font-size: 1.7em;
-    font-weight: bold;
-    min-height: 50px; /* Assure que l'espace est réservé */
-}
-
-.resultat.correct {
-    color: var(--correct-color);
-}
-
-.resultat.incorrect {
-    color: var(--incorrect-color);
-}
-
-.technique-aide {
-    margin-top: 15px;
-    font-style: italic;
-    font-size: 1em;
-    color: #666;
-    animation: fadeIn 1s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+        validerBtn.style.display = 'inline-block';
+        nouvelleQuestionBtn.style.display = 'none';
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    function verifierReponse() {
+        const reponseUtilisateur = parseInt(reponseInput.value);
+
+        if (reponseUtilisateur === bonneReponse) {
+            resultatEl.textContent = `Vrai ! ${bonneReponse}`;
+            resultatEl.className = 'resultat correct';
+            erreursParNombre[nombre1] = 0;
+            erreursParNombre[nombre2] = 0;
+        } else {
+            resultatEl.textContent = `Faux. La bonne réponse était ${bonneReponse}.`;
+            resultatEl.className = 'resultat incorrect';
+
+            erreursParNombre[nombre1] = (erreursParNombre[nombre1] || 0) + 1;
+            erreursParNombre[nombre2] = (erreursParNombre[nombre2] || 0) + 1;
+
+            if (erreursParNombre[nombre1] >= seuilErreurs) {
+                afficherAide(nombre1, nombre2);
+            } else if (erreursParNombre[nombre2] >= seuilErreurs) {
+                afficherAide(nombre2, nombre1);
+            }
+        }
+
+        validerBtn.style.display = 'none';
+        nouvelleQuestionBtn.style.display = 'inline-block';
     }
-}
+
+    function afficherAide(nombreDifficile, autreNombre) {
+        let astuce = '';
+
+        switch (nombreDifficile) {
+            case 1:
+                astuce = `Multiplier par 1, c'est facile ! Le résultat est toujours le nombre lui-même : <strong>${autreNombre}</strong>`;
+                break;
+            case 2:
+                astuce = `Multiplier par 2, c'est comme faire une addition : <strong>${autreNombre} + ${autreNombre} = ${autreNombre * 2}</strong>`;
+                break;
+            case 3:
+                astuce = `Pour multiplier par 3, tu peux faire : <strong>2 x ${autreNombre} + ${autreNombre} = ${2 * autreNombre + autreNombre}</strong>`;
+                break;
+            case 4:
+                astuce = `Pour multiplier par 4, tu peux doubler deux fois : <strong>${autreNombre} x 2 = ${autreNombre * 2}</strong> puis <strong>${autreNombre * 2} x 2 = ${autreNombre * 4}</strong>`;
+                break;
+            case 5:
+                astuce = `Pour multiplier par 5, tu peux faire : <strong>${autreNombre} x 10 / 2 = ${autreNombre * 10 / 2}</strong>`;
+                break;
+            case 6:
+                astuce = `Pour multiplier par 6, tu peux faire : <strong>5 x ${autreNombre} + ${autreNombre} = ${5 * autreNombre + autreNombre}</strong>`;
+                break;
+            case 7:
+                astuce = `Pour multiplier par 7, tu peux faire : <strong>5 x ${autreNombre} + 2 x ${autreNombre} = ${5 * autreNombre + 2 * autreNombre}</strong>`;
+                break;
+            case 8:
+                astuce = `Pour multiplier par 8, tu peux doubler trois fois : <strong>${autreNombre} x 2 = ${autreNombre * 2}</strong>, <strong>${autreNombre * 2} x 2 = ${autreNombre * 4}</strong> puis <strong>${autreNombre * 4} x 2 = ${autreNombre * 8}</strong>`;
+                break;
+            case 9:
+                astuce = `Pour multiplier par 9, tu peux faire : <strong>10 x ${autreNombre} - ${autreNombre} = ${10 * autreNombre - autreNombre}</strong>`;
+                break;
+            case 10:
+                astuce = `Pour multiplier par 10, il suffit d'ajouter un zéro à la fin : <strong>${autreNombre}0</strong>`;
+                break;
+            case 11:
+                if (autreNombre <= 9) {
+                    astuce = `Pour multiplier par 11, il suffit de répéter le chiffre : <strong>${autreNombre}${autreNombre}</strong>`;
+                } else {
+                    astuce = `Pour multiplier par 11, tu peux faire : <strong>10 x ${autreNombre} + ${autreNombre} = ${10 * autreNombre + autreNombre}</strong>`;
+                }
+                break;
+            case 12:
+                astuce = `Pour multiplier par 12, tu peux faire : <strong>10 x ${autreNombre} + 2 x ${autreNombre} = ${10 * autreNombre + 2 * autreNombre}</strong>`;
+                break;
+        }
+
+        if (astuce) {
+            techniqueAideEl.innerHTML = `<p>Astuce :</p><p>${astuce}</p>`;
+            techniqueAideEl.className = 'technique-aide';
+        }
+    }
+
+    validerBtn.addEventListener('click', verifierReponse);
+    nouvelleQuestionBtn.addEventListener('click', genererQuestion);
+
+    reponseInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            verifierReponse();
+        }
+    });
+
+    genererQuestion();
+});
