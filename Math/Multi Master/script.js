@@ -53,6 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function afficherAide(nombreDifficile, autreNombre) {
         let astuce = '';
+        const etape1 = autreNombre * 2;
+        const etape2 = etape1 * 2;
+        const etape3 = etape2 * 2;
 
         switch (nombreDifficile) {
             case 1:
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 astuce = `Pour multiplier par 7, tu peux faire : <strong>5 x ${autreNombre} + 2 x ${autreNombre} = ${5 * autreNombre + 2 * autreNombre}</strong>`;
                 break;
             case 8:
-                astuce = `Pour multiplier par 8, tu peux doubler trois fois : <strong>${autreNombre} x 2 = ${autreNombre * 2}</strong>, <strong>${autreNombre * 2} x 2 = ${autreNombre * 4}</strong> puis <strong>${autreNombre * 4} x 2 = ${autreNombre * 8}</strong>`;
+                astuce = `Pour multiplier par 8, tu peux doubler trois fois : <strong>${autreNombre} x 2 = ${etape1}</strong>, <strong>${etape1} x 2 = ${etape2}</strong> puis <strong>${etape2} x 2 = ${etape3}</strong>`;
                 break;
             case 9:
                 astuce = `Pour multiplier par 9, tu peux faire : <strong>10 x ${autreNombre} - ${autreNombre} = ${10 * autreNombre - autreNombre}</strong>`;
