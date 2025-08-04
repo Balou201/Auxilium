@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprendre la Conjugaison</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Apprendre la Conjugaison</h1>
+        <nav>
+            <a href="#" id="lien-accueil">Gérer les verbes</a> |
+            <a href="#" id="lien-exercice">Démarrer un exercice</a>
+        </nav>
+    </header>
+
+    <main>
+        <div id="section-accueil">
+            <section id="ajout-verbe">
+                <h2>Ajouter un nouveau verbe et sa conjugaison</h2>
+                <form id="form-ajout">
+                    <input type="text" id="verbe-infinitif" placeholder="Verbe à l'infinitif" required>
+                    <input type="text" id="conjugaison-je" placeholder="Je..." required>
+                    <input type="text" id="conjugaison-tu" placeholder="Tu..." required>
+                    <input type="text" id="conjugaison-il" placeholder="Il/Elle..." required>
+                    <input type="text" id="conjugaison-nous" placeholder="Nous..." required>
+                    <input type="text" id="conjugaison-vous" placeholder="Vous..." required>
+                    <input type="text" id="conjugaison-ils" placeholder="Ils/Elles..." required>
+                    <button type="submit">Ajouter le verbe</button>
+                </form>
+                <button id="bouton-reset">Réinitialiser les verbes</button>
+            </section>
+            
+            <section id="liste-verbes">
+                <h2>Mes verbes</h2>
+                <ul id="liste-ul">
+                    </ul>
+            </section>
+        </div>
+        
+        <div id="section-exercice" style="display:none;">
+            <section id="zone-configuration">
+                <h2>Configuration de l'exercice</h2>
+                <div id="selection-exercice">
+                    <select id="select-verbe"></select>
+                    <span>→</span>
+                    <select id="select-pronom"></select>
+                    <button id="bouton-demarrer">Démarrer l'exercice</button>
+                </div>
+            </section>
+
+            <section id="zone-exercice-contenu" style="display:none;">
+                <p id="consigne-exercice"></p>
+                <div id="exercice-contenu">
+                    <input type="text" id="input-reponse" placeholder="Écris la conjugaison ici">
+                    <button id="bouton-soumettre">Soumettre</button>
+                </div>
+                
+                <p id="message-feedback"></p>
+                <button id="bouton-suivant">Verbe suivant</button>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
