@@ -19,19 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const boutonReset = document.getElementById('bouton-reset');
 
     // Éléments de la section d'exercice
-    const selectVerbe = document.getElementById('select-verbe');
-    const selectPronom = document.getElementById('select-pronom');
     const boutonDemarrer = document.getElementById('bouton-demarrer');
     const zoneConfiguration = document.getElementById('zone-configuration');
     const zoneExerciceContenu = document.getElementById('zone-exercice-contenu');
     const consigneExercice = document.getElementById('consigne-exercice');
-    const inputReponse = document.getElementById('input-reponse');
-    const boutonSoumettre = document.getElementById('bouton-soumettre');
+    const exerciceMultipleDiv = document.getElementById('exercice-multiple');
+    const exerciceUniqueDiv = document.getElementById('exercice-unique');
     const messageFeedback = document.getElementById('message-feedback');
     const boutonSuivant = document.getElementById('bouton-suivant');
+    const conjugaisonsExerciceInputs = pronoms.reduce((acc, p) => {
+        acc[p] = document.getElementById(`input-${p}`);
+        return acc;
+    }, {});
+    const boutonSoumettreComplet = document.getElementById('bouton-soumettre-complet');
+    const inputUnique = document.getElementById('input-unique');
+    const boutonSoumettreUnique = document.getElementById('bouton-soumettre-unique');
 
     // Variables pour l'exercice
     let verbeCourant;
+    let typeExerciceCourant;
     let pronomCourant;
 
     // Fonctions de chargement/sauvegarde
@@ -40,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (verbesSauvegardes) {
             verbes = JSON.parse(verbesSauvegardes);
             afficherVerbes();
-            peuplerSelecteurs();
         }
     }
 
@@ -51,30 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fonctions d'affichage
     function afficherVerbes() {
         listeUl.innerHTML = '';
-        verbes.forEach((verbe) => {
+        verbes.forEach((verbe, index) => {
             const li = document.createElement('li');
-            li.innerHTML = `<strong>${verbe.infinitif}</strong>: <br>
-                Je: ${verbe.je}, Tu: ${verbe.tu}, Il: ${verbe.il}, Nous: ${verbe.nous}, Vous: ${verbe.vous}, Ils: ${verbe.ils}`;
+            li.innerHTML = `<div><strong>${verbe.infinitif}</strong><br>
+                Je: ${verbe.je}, Tu: ${verbe.tu}, Il: ${verbe.il}, Nous: ${verbe.nous}, Vous: ${verbe.vous}, Ils: ${verbe.ils}</div>`;
+            
+            const boutonSupprimer = document.createElement('button');
+            boutonSupprimer.textContent = 'Supprimer';
+            boutonSupprimer.addEventListener('click', () => {
+                supprimerVerbe(index);
+            });
+            li.appendChild(boutonSupprimer);
             listeUl.appendChild(li);
-        });
-    }
-
-    function peuplerSelecteurs() {
-        selectVerbe.innerHTML = '<option value="">Choisir un verbe...</option>';
-        selectPronom.innerHTML = '<option value="">Choisir un pronom...</option>';
-        
-        verbes.forEach(verbe => {
-            const option = document.createElement('option');
-            option.value = verbe.infinitif;
-            option.textContent = verbe.infinitif;
-            selectVerbe.appendChild(option);
-        });
-
-        pronoms.forEach(pronom => {
-            const option = document.createElement('option');
-            option.value = pronom;
-            option.textContent = pronom;
-            selectPronom.appendChild(option);
         });
     }
 
@@ -92,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sectionExercice.style.display = 'block';
         zoneConfiguration.style.display = 'block';
         zoneExerciceContenu.style.display = 'none';
-        peuplerSelecteurs();
     });
 
     // Gestion de l'ajout et du reset
@@ -121,59 +113,121 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('conjugaisonVerbes');
             verbes = [];
             afficherVerbes();
-            peuplerSelecteurs();
         }
     });
+
+    function supprimerVerbe(index) {
+        if (confirm(`Voulez-vous vraiment supprimer le verbe "${verbes[index].infinitif}" ?`)) {
+            verbes.splice(index, 1);
+            sauvegarderVerbes();
+            afficherVerbes();
+        }
+    }
 
     // Logique des exercices
     boutonDemarrer.addEventListener('click', () => {
-        const verbeInfinitif = selectVerbe.value;
-        const pronom = selectPronom.value;
-
-        if (verbeInfinitif && pronom) {
-            commencerExercice(verbeInfinitif, pronom);
-        } else {
-            alert('Veuillez choisir un verbe et un pronom pour l\'exercice.');
-        }
-    });
-
-    function commencerExercice(verbeInfinitif, pronom) {
-        verbeCourant = verbes.find(v => v.infinitif === verbeInfinitif);
-        pronomCourant = pronom;
-
-        if (!verbeCourant) {
-            alert("Verbe non trouvé.");
+        if (verbes.length === 0) {
+            alert("Veuillez ajouter des verbes pour démarrer un exercice.");
             return;
         }
-
+        
         zoneConfiguration.style.display = 'none';
         zoneExerciceContenu.style.display = 'block';
         messageFeedback.textContent = '';
         boutonSuivant.style.display = 'none';
         
-        consigneExercice.textContent = `Conjugue le verbe "${verbeCourant.infinitif}" au présent avec le pronom "${pronom}"`;
-        inputReponse.value = '';
+        commencerExerciceAleatoire();
+    });
+
+    function commencerExerciceAleatoire() {
+        const indexVerbe = Math.floor(Math.random() * verbes.length);
+        verbeCourant = verbes[indexVerbe];
+        
+        const typeExo = Math.random() < 0.5 ? 'complet' : 'unique';
+        typeExerciceCourant = typeExo;
+
+        if (typeExo === 'complet') {
+            preparerExerciceComplet();
+        } else {
+            preparerExerciceUnique();
+        }
     }
 
-    boutonSoumettre.addEventListener('click', () => {
-        const reponseUtilisateur = inputReponse.value.trim();
-        const bonneReponse = verbeCourant[pronomCourant];
+    function preparerExerciceComplet() {
+        exerciceMultipleDiv.style.display = 'block';
+        exerciceUniqueDiv.style.display = 'none';
+        consigneExercice.textContent = `Conjugue le verbe "${verbeCourant.infinitif}" au présent.`;
         
-        if (reponseUtilisateur.toLowerCase() === bonneReponse.toLowerCase()) {
-            messageFeedback.textContent = "Bonne réponse ! 🎉";
+        // Vider et désactiver les champs
+        inputInfinitif.value = verbeCourant.infinitif;
+        inputInfinitif.disabled = true;
+        
+        pronoms.forEach(p => {
+            conjugaisonsExerciceInputs[p].value = '';
+            conjugaisonsExerciceInputs[p].disabled = false;
+        });
+    }
+
+    function preparerExerciceUnique() {
+        exerciceMultipleDiv.style.display = 'none';
+        exerciceUniqueDiv.style.display = 'block';
+        
+        const indexPronom = Math.floor(Math.random() * pronoms.length);
+        pronomCourant = pronoms[indexPronom];
+        
+        consigneExercice.textContent = `Conjugue le verbe "${verbeCourant.infinitif}" au présent avec le pronom "${pronomCourant}".`;
+        inputUnique.value = '';
+    }
+
+    boutonSoumettreComplet.addEventListener('click', () => {
+        let toutEstCorrect = true;
+        const reponsesUtilisateur = {};
+        
+        pronoms.forEach(p => {
+            reponsesUtilisateur[p] = conjugaisonsExerciceInputs[p].value.trim().toLowerCase();
+        });
+
+        pronoms.forEach(p => {
+            const bonneReponse = verbeCourant[p].toLowerCase();
+            const estCorrect = reponsesUtilisateur[p] === bonneReponse;
+            
+            if (!estCorrect) {
+                toutEstCorrect = false;
+                conjugaisonsExerciceInputs[p].value = bonneReponse;
+                conjugaisonsExerciceInputs[p].style.backgroundColor = '#f8d7da'; // Couleur d'erreur
+            } else {
+                conjugaisonsExerciceInputs[p].style.backgroundColor = '#d4edda'; // Couleur de succès
+            }
+            conjugaisonsExerciceInputs[p].disabled = true;
+        });
+
+        if (toutEstCorrect) {
+            messageFeedback.textContent = "Parfait, tout est correct ! 🎉";
             messageFeedback.style.color = "green";
         } else {
-            messageFeedback.textContent = `Mauvaise réponse. La bonne conjugaison est "${bonneReponse}".`;
+            messageFeedback.textContent = `Certaines réponses sont incorrectes. Voici la bonne conjugaison.`;
             messageFeedback.style.color = "red";
         }
         boutonSuivant.style.display = 'block';
     });
 
+    boutonSoumettreUnique.addEventListener('click', () => {
+        const reponseUtilisateur = inputUnique.value.trim().toLowerCase();
+        const bonneReponse = verbeCourant[pronomCourant].toLowerCase();
+        
+        if (reponseUtilisateur === bonneReponse) {
+            messageFeedback.textContent = "Bonne réponse ! 🎉";
+            messageFeedback.style.color = "green";
+        } else {
+            messageFeedback.textContent = `Mauvaise réponse. La bonne conjugaison est "${verbeCourant[pronomCourant]}".`;
+            messageFeedback.style.color = "red";
+        }
+        boutonSuivant.style.display = 'block';
+        inputUnique.disabled = true;
+    });
+
     boutonSuivant.addEventListener('click', () => {
-        // Redémarrer l'exercice avec un verbe/pronom aléatoire ou retourner à la configuration
-        alert("Exercice terminé ! On va recommencer.");
-        zoneConfiguration.style.display = 'block';
-        zoneExerciceContenu.style.display = 'none';
+        commencerExerciceAleatoire();
     });
     
     chargerVerbes();
