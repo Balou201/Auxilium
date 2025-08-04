@@ -158,10 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
         exerciceUniqueDiv.style.display = 'none';
         consigneExercice.textContent = `Conjugue le verbe "${verbeCourant.infinitif}" au présent.`;
         
-        // Vider et désactiver les champs
-        inputInfinitif.value = verbeCourant.infinitif;
-        inputInfinitif.disabled = true;
-        
         pronoms.forEach(p => {
             conjugaisonsExerciceInputs[p].value = '';
             conjugaisonsExerciceInputs[p].disabled = false;
@@ -202,10 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (toutEstCorrect) {
-            messageFeedback.textContent = "Parfait, tout est correct ! 🎉";
+            messageFeedback.textContent = "Correct !";
             messageFeedback.style.color = "green";
         } else {
-            messageFeedback.textContent = `Certaines réponses sont incorrectes. Voici la bonne conjugaison.`;
+            messageFeedback.textContent = `Incorrect. Voici la bonne conjugaison.`;
             messageFeedback.style.color = "red";
         }
         boutonSuivant.style.display = 'block';
@@ -216,10 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const bonneReponse = verbeCourant[pronomCourant].toLowerCase();
         
         if (reponseUtilisateur === bonneReponse) {
-            messageFeedback.textContent = "Bonne réponse ! 🎉";
+            messageFeedback.textContent = "Correct !";
             messageFeedback.style.color = "green";
         } else {
-            messageFeedback.textContent = `Mauvaise réponse. La bonne conjugaison est "${verbeCourant[pronomCourant]}".`;
+            messageFeedback.textContent = `Incorrect. La bonne conjugaison est "${verbeCourant[pronomCourant]}".`;
             messageFeedback.style.color = "red";
         }
         boutonSuivant.style.display = 'block';
