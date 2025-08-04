@@ -44,22 +44,31 @@
             <section id="zone-configuration">
                 <h2>Configuration de l'exercice</h2>
                 <div id="selection-exercice">
-                    <select id="select-verbe"></select>
-                    <span>→</span>
-                    <select id="select-pronom"></select>
-                    <button id="bouton-demarrer">Démarrer l'exercice</button>
+                    <button id="bouton-demarrer">Démarrer un exercice aléatoire</button>
                 </div>
             </section>
 
             <section id="zone-exercice-contenu" style="display:none;">
                 <p id="consigne-exercice"></p>
                 <div id="exercice-contenu">
-                    <input type="text" id="input-reponse" placeholder="Écris la conjugaison ici">
-                    <button id="bouton-soumettre">Soumettre</button>
+                    <div id="exercice-multiple" style="display:none;">
+                        <input type="text" id="input-infinitif" placeholder="Infinitif" disabled>
+                        <input type="text" id="input-je" placeholder="Je..." required>
+                        <input type="text" id="input-tu" placeholder="Tu..." required>
+                        <input type="text" id="input-il" placeholder="Il/Elle..." required>
+                        <input type="text" id="input-nous" placeholder="Nous..." required>
+                        <input type="text" id="input-vous" placeholder="Vous..." required>
+                        <input type="text" id="input-ils" placeholder="Ils/Elles..." required>
+                        <button id="bouton-soumettre-complet">Soumettre</button>
+                    </div>
+                    <div id="exercice-unique" style="display:none;">
+                        <input type="text" id="input-unique" placeholder="Écris la conjugaison ici">
+                        <button id="bouton-soumettre-unique">Soumettre</button>
+                    </div>
                 </div>
                 
                 <p id="message-feedback"></p>
-                <button id="bouton-suivant">Verbe suivant</button>
+                <button id="bouton-suivant" style="display:none;">Verbe suivant</button>
             </section>
         </div>
     </main>
