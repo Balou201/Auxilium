@@ -111,6 +111,18 @@ button:hover {
     padding: 12px;
     border-radius: 5px;
     border-left: 5px solid #007bff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#liste-verbes li button {
+    background-color: #dc3545;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+#liste-verbes li button:hover {
+    background-color: #c82333;
 }
 
 #message-feedback {
@@ -126,4 +138,14 @@ button:hover {
 
 #bouton-suivant:hover {
     background-color: #138496;
+}
+
+.erreur {
+    color: red;
+    font-weight: bold;
+}
+
+.correct {
+    color: green;
+    font-weight: bold;
 }
