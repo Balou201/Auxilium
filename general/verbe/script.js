@@ -133,13 +133,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         zoneConfiguration.style.display = 'none';
         zoneExerciceContenu.style.display = 'block';
-        messageFeedback.textContent = '';
-        boutonSuivant.style.display = 'none';
         
         commencerExerciceAleatoire();
     });
 
     function commencerExerciceAleatoire() {
+        // Ces deux lignes sont ajoutées ici
+        messageFeedback.textContent = '';
+        boutonSuivant.style.display = 'none';
+        
         const indexVerbe = Math.floor(Math.random() * verbes.length);
         verbeCourant = verbes[indexVerbe];
         
@@ -161,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pronoms.forEach(p => {
             conjugaisonsExerciceInputs[p].value = '';
             conjugaisonsExerciceInputs[p].disabled = false;
+            conjugaisonsExerciceInputs[p].style.backgroundColor = ''; // Réinitialiser la couleur
         });
     }
 
@@ -173,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         consigneExercice.textContent = `Conjugue le verbe "${verbeCourant.infinitif}" au présent avec le pronom "${pronomCourant}".`;
         inputUnique.value = '';
+        inputUnique.disabled = false;
+        inputUnique.style.backgroundColor = ''; // Réinitialiser la couleur
     }
 
     boutonSoumettreComplet.addEventListener('click', () => {
@@ -189,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!estCorrect) {
                 toutEstCorrect = false;
-                conjugaisonsExerciceInputs[p].value = bonneReponse;
+                conjugaisonsExerciceInputs[p].value = verbeCourant[p];
                 conjugaisonsExerciceInputs[p].style.backgroundColor = '#f8d7da'; // Couleur d'erreur
             } else {
                 conjugaisonsExerciceInputs[p].style.backgroundColor = '#d4edda'; // Couleur de succès
@@ -214,9 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (reponseUtilisateur === bonneReponse) {
             messageFeedback.textContent = "Correct !";
             messageFeedback.style.color = "green";
+            inputUnique.style.backgroundColor = '#d4edda';
         } else {
             messageFeedback.textContent = `Incorrect. La bonne conjugaison est "${verbeCourant[pronomCourant]}".`;
             messageFeedback.style.color = "red";
+            inputUnique.style.backgroundColor = '#f8d7da';
         }
         boutonSuivant.style.display = 'block';
         inputUnique.disabled = true;
