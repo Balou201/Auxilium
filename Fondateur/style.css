@@ -65,6 +65,27 @@ body {
     transform: translateY(-5px);
 }
 
+/* Styles spécifiques pour l'Owner */
+.owner-card {
+    background: #fff8e1; /* Fond jaune très clair */
+    border: 2px solid #ffd700; /* Bordure dorée */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7); /* Effet "fluo doré" */
+}
+
+/* Styles spécifiques pour les Co-fondateurs */
+.cofounder-card {
+    background: #e6f7ff; /* Fond bleu clair */
+    border: 1px solid #99ccff; /* Bordure bleue */
+    box-shadow: 0 0 8px rgba(153, 204, 255, 0.5);
+}
+
+/* Styles spécifiques pour les Contributeurs */
+.contributor-card {
+    background: #f1f1f1; /* Fond gris clair */
+    border: 1px solid #ccc; /* Bordure grise */
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
 .card h3 {
     margin: 0 0 5px 0;
     color: #2c3e50;
