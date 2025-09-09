@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://balou201.github.io/Auxilium/sitemap.xml
